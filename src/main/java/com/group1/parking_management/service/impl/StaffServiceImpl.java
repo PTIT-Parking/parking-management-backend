@@ -1,9 +1,10 @@
 package com.group1.parking_management.service.impl;
 
 import java.util.List;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.group1.parking_management.dto.request.StaffCreationRequest;
 import com.group1.parking_management.dto.request.StaffUpdateRequest;
 import com.group1.parking_management.dto.response.StaffResponse;
@@ -22,10 +23,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional
 public class StaffServiceImpl implements StaffService {
+
     private final StaffRepository staffRepository;
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
     private final StaffMapper staffMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public StaffResponse createStaff(StaffCreationRequest request) {
@@ -42,7 +45,7 @@ public class StaffServiceImpl implements StaffService {
 
         Account account = Account.builder()
                 .username(request.getUsername())
-                .password(request.getPassword())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .role(staffRole)
                 .build();
 
@@ -80,9 +83,28 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public StaffResponse updateStaff(String staffId, StaffUpdateRequest request) {
+
         Staff staff = staffRepository.findByIdWithAccount(staffId)
                 .orElseThrow(() -> new IllegalArgumentException("Staff not found"));
+        if (request.getUsername() != null || request.getPassword() != null) {
+            Account account = staff.getAccount();
+
+            if (request.getUsername() != null) {
+                if (!account.getUsername().equals(request.getUsername()) && accountRepository.existsByUsername(request.getUsername())) {
+                    throw new IllegalArgumentException("Username already existed");
+                }
+                account.setUsername(request.getUsername());
+            }
+
+            if (request.getPassword() != null) {
+                account.setPassword(passwordEncoder.encode(request.getPassword()));
+            }
+            accountRepository.save(account);
+        }
+
+        // Other information using mapper 
         staffMapper.updateFromStaffRequest(staff, request);
+
         return staffMapper.toStaffResponse(staffRepository.save(staff));
     }
 }
