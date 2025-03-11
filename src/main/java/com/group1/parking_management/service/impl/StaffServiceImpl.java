@@ -11,6 +11,8 @@ import com.group1.parking_management.dto.response.StaffResponse;
 import com.group1.parking_management.entity.Account;
 import com.group1.parking_management.entity.Role;
 import com.group1.parking_management.entity.Staff;
+import com.group1.parking_management.exception.AppException;
+import com.group1.parking_management.exception.ErrorCode;
 import com.group1.parking_management.mapper.StaffMapper;
 import com.group1.parking_management.repository.AccountRepository;
 import com.group1.parking_management.repository.RoleRepository;
@@ -33,15 +35,15 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public StaffResponse createStaff(StaffCreationRequest request) {
         if (staffRepository.existsByIdentification(request.getIdentification())) {
-            throw new IllegalArgumentException("Identification existed!");
+            throw new AppException(ErrorCode.IDENTIFICATION_EXISTED);
         }
 
         if (accountRepository.existsByUsername(request.getUsername())) {
-            throw new IllegalArgumentException("Username existed!");
+            throw new AppException(ErrorCode.USERNAME_EXISTED);
         }
 
         Role staffRole = roleRepository.findByName("STAFF")
-                .orElseThrow(() -> new IllegalArgumentException("Role not found!"));
+                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
 
         Account account = Account.builder()
                 .username(request.getUsername())
@@ -71,7 +73,7 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public StaffResponse getStaffById(String accountId) {
         Staff staff = staffRepository.findByIdWithAccount(accountId)
-                .orElseThrow(() -> new IllegalArgumentException("Staff not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_FOUND));
         return staffMapper.toStaffResponse(staff);
     }
 
@@ -85,13 +87,13 @@ public class StaffServiceImpl implements StaffService {
     public StaffResponse updateStaff(String staffId, StaffUpdateRequest request) {
 
         Staff staff = staffRepository.findByIdWithAccount(staffId)
-                .orElseThrow(() -> new IllegalArgumentException("Staff not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_FOUND));
         if (request.getUsername() != null || request.getPassword() != null) {
             Account account = staff.getAccount();
 
             if (request.getUsername() != null) {
                 if (!account.getUsername().equals(request.getUsername()) && accountRepository.existsByUsername(request.getUsername())) {
-                    throw new IllegalArgumentException("Username already existed");
+                    throw new AppException(ErrorCode.USERNAME_EXISTED);
                 }
                 account.setUsername(request.getUsername());
             }
