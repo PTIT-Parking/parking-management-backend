@@ -16,6 +16,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class  StaffUpdateRequest {
+
+    private String username;
+
+    private String password;
+
     private String identification;
 
     private String name;
