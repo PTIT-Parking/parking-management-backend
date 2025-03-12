@@ -17,4 +17,11 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect    
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://localhost:8080/api/auth"
+          secret-key: "G18XeUdtfVcoB+Ukcga417kzaaAX5DM4rCuuP7nJUlDQmSKJEZtw/vSH7c3PXn6W"
+          valid-duration: 36000 #second
 

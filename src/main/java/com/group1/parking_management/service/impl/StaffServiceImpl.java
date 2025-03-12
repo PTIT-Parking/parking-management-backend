@@ -5,17 +5,17 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.group1.parking_management.constant.Role;
 import com.group1.parking_management.dto.request.StaffCreationRequest;
 import com.group1.parking_management.dto.request.StaffUpdateRequest;
 import com.group1.parking_management.dto.response.StaffResponse;
 import com.group1.parking_management.entity.Account;
-import com.group1.parking_management.entity.Role;
 import com.group1.parking_management.entity.Staff;
 import com.group1.parking_management.exception.AppException;
 import com.group1.parking_management.exception.ErrorCode;
 import com.group1.parking_management.mapper.StaffMapper;
 import com.group1.parking_management.repository.AccountRepository;
-import com.group1.parking_management.repository.RoleRepository;
 import com.group1.parking_management.repository.StaffRepository;
 import com.group1.parking_management.service.StaffService;
 
@@ -28,7 +28,6 @@ public class StaffServiceImpl implements StaffService {
 
     private final StaffRepository staffRepository;
     private final AccountRepository accountRepository;
-    private final RoleRepository roleRepository;
     private final StaffMapper staffMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -42,8 +41,7 @@ public class StaffServiceImpl implements StaffService {
             throw new AppException(ErrorCode.USERNAME_EXISTED);
         }
 
-        Role staffRole = roleRepository.findByName("STAFF")
-                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+        Role staffRole = Role.STAFF;
 
         Account account = Account.builder()
                 .username(request.getUsername())
