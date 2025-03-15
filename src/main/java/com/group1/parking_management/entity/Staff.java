@@ -2,7 +2,7 @@ package com.group1.parking_management.entity;
 
 import java.time.LocalDate;
 
-import com.group1.parking_management.constant.Gender;
+import com.group1.parking_management.common.Gender;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

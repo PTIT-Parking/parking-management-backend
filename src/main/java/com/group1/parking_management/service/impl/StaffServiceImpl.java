@@ -6,7 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.group1.parking_management.constant.Role;
+import com.group1.parking_management.common.Role;
 import com.group1.parking_management.dto.request.StaffCreationRequest;
 import com.group1.parking_management.dto.request.StaffUpdateRequest;
 import com.group1.parking_management.dto.response.StaffResponse;
@@ -34,7 +34,7 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public StaffResponse createStaff(StaffCreationRequest request) {
         if (staffRepository.existsByIdentification(request.getIdentification())) {
-            throw new AppException(ErrorCode.IDENTIFICATION_EXISTED);
+            throw new AppException(ErrorCode.STAFF_IDENTIFICATION_EXISTED);
         }
 
         if (accountRepository.existsByUsername(request.getUsername())) {

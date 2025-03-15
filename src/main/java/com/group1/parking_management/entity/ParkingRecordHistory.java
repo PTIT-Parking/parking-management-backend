@@ -2,7 +2,7 @@ package com.group1.parking_management.entity;
 
 import java.time.LocalDateTime;
 
-import com.group1.parking_management.constant.ParkingType;
+import com.group1.parking_management.common.ParkingType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
