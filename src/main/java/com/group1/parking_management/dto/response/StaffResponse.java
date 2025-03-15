@@ -2,7 +2,8 @@ package com.group1.parking_management.dto.response;
 
 import java.time.LocalDate;
 
-import com.group1.parking_management.constant.Gender;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.group1.parking_management.common.Gender;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class StaffResponse {
     private String accountId;
     private String username;

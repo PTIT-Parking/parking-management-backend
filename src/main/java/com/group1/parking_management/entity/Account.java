@@ -1,6 +1,6 @@
 package com.group1.parking_management.entity;
 
-import com.group1.parking_management.constant.Role;
+import com.group1.parking_management.common.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

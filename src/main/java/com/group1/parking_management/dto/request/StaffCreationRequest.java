@@ -2,7 +2,7 @@ package com.group1.parking_management.dto.request;
 
 import java.time.LocalDate;
 
-import com.group1.parking_management.constant.Gender;
+import com.group1.parking_management.common.Gender;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

@@ -3,7 +3,7 @@ package com.group1.parking_management.dto.request;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.group1.parking_management.constant.Gender;
+import com.group1.parking_management.common.Gender;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
