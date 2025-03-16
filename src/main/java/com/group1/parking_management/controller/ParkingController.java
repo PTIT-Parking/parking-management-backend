@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.group1.parking_management.dto.ApiResponse;
 import com.group1.parking_management.dto.request.ParkingEntryRequest;
+import com.group1.parking_management.dto.request.ParkingExitRequest;
 import com.group1.parking_management.dto.response.ParkingEntryResponse;
+import com.group1.parking_management.dto.response.ParkingExitResponse;
 import com.group1.parking_management.service.ParkingService;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,13 @@ public class ParkingController {
     public ApiResponse<ParkingEntryResponse> registerEntry(@RequestBody ParkingEntryRequest request) {
         return ApiResponse.<ParkingEntryResponse>builder()
                 .result(parkingService.registerEntry(request))
+                .build();
+    }
+
+    @PostMapping("/exit")
+    public ApiResponse<ParkingExitResponse> registerExit(@RequestBody ParkingExitRequest request) {
+        return ApiResponse.<ParkingExitResponse>builder()
+                .result(parkingService.processExit(request))
                 .build();
     }
 }

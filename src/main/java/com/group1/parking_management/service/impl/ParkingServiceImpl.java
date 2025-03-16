@@ -1,6 +1,8 @@
 package com.group1.parking_management.service.impl;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,11 +11,17 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.group1.parking_management.common.ParkingType;
+import com.group1.parking_management.common.PaymentType;
 import com.group1.parking_management.dto.request.ParkingEntryRequest;
+import com.group1.parking_management.dto.request.ParkingExitRequest;
 import com.group1.parking_management.dto.response.ParkingEntryResponse;
+import com.group1.parking_management.dto.response.ParkingExitResponse;
 import com.group1.parking_management.entity.Account;
 import com.group1.parking_management.entity.ParkingCard;
 import com.group1.parking_management.entity.ParkingRecord;
+import com.group1.parking_management.entity.ParkingRecordHistory;
+import com.group1.parking_management.entity.Payment;
+import com.group1.parking_management.entity.Price;
 import com.group1.parking_management.entity.VehicleType;
 import com.group1.parking_management.exception.AppException;
 import com.group1.parking_management.exception.ErrorCode;
@@ -21,14 +29,19 @@ import com.group1.parking_management.mapper.RecordMapper;
 import com.group1.parking_management.repository.AccountRepository;
 import com.group1.parking_management.repository.ActiveMonthlyRegistrationRepository;
 import com.group1.parking_management.repository.ParkingCardRepository;
+import com.group1.parking_management.repository.ParkingRecordHistoryRepository;
 import com.group1.parking_management.repository.ParkingRecordRepository;
+import com.group1.parking_management.repository.PaymentRepository;
+import com.group1.parking_management.repository.PriceRepository;
 import com.group1.parking_management.repository.VehicleTypeRepository;
 import com.group1.parking_management.service.ParkingService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ParkingServiceImpl implements ParkingService {
     private final ParkingRecordRepository parkingRecordRepository;
     private final VehicleTypeRepository vehicleTypeRepository;
@@ -36,6 +49,9 @@ public class ParkingServiceImpl implements ParkingService {
     private final AccountRepository accountRepository;
     private final ParkingCardRepository parkingCardRepository;
     private final RecordMapper recordMapper;
+    private final PriceRepository priceRepository;
+    private final PaymentRepository paymentRepository;
+    private final ParkingRecordHistoryRepository parkingRecordHistoryRepository;
 
     @Transactional
     @PreAuthorize("hasRole('STAFF')")
@@ -47,10 +63,12 @@ public class ParkingServiceImpl implements ParkingService {
         if (!StringUtils.hasText(request.getLicensePlate()) && !StringUtils.hasText(request.getIdentifier())) {
             throw new AppException(ErrorCode.PARKING_IDENTIFICATION_ERROR);
         }
-        if (StringUtils.hasText(request.getLicensePlate()) && parkingRecordRepository.existsByLicensePlate(request.getLicensePlate())) {
+        if (StringUtils.hasText(request.getLicensePlate())
+                && parkingRecordRepository.existsByLicensePlate(request.getLicensePlate())) {
             throw new AppException(ErrorCode.PARKING_LICENSE_PLATE_EXISTED);
         }
-        if (StringUtils.hasText(request.getIdentifier()) && parkingRecordRepository.existsByIdentifier(request.getIdentifier())) {
+        if (StringUtils.hasText(request.getIdentifier())
+                && parkingRecordRepository.existsByIdentifier(request.getIdentifier())) {
             throw new AppException(ErrorCode.PARKING_IDENTIFIER_EXISTED);
         }
 
@@ -63,14 +81,13 @@ public class ParkingServiceImpl implements ParkingService {
         } catch (NumberFormatException e) {
             throw new AppException(ErrorCode.PARKING_CARD_ID_INVALID);
         }
-        
+
         if (parkingRecordRepository.existsByCard_CardId(cardId)) {
             throw new AppException(ErrorCode.PARKING_CARD_IN_USED);
         }
-        
+
         ParkingCard parkingCard = parkingCardRepository.findById(cardId)
                 .orElseThrow(() -> new AppException(ErrorCode.PARKING_CARD_NOT_FOUND));
-
 
         VehicleType vehicleType = vehicleTypeRepository.findById(request.getVehicleTypeId())
                 .orElseThrow(() -> new AppException(ErrorCode.PARKING_VEHICLE_TYPE_NOT_FOUND));
@@ -86,5 +103,77 @@ public class ParkingServiceImpl implements ParkingService {
                 .build();
 
         return recordMapper.toParkingEntryResponse(parkingRecordRepository.save(parkingRecord));
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('STAFF')")
+    public ParkingExitResponse processExit(ParkingExitRequest request) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Account staff = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_FOUND));
+
+        if (!StringUtils.hasText(request.getLicensePlate()) && !StringUtils.hasText(request.getIdentifier())) {
+            throw new AppException(ErrorCode.PARKING_IDENTIFICATION_ERROR);
+        }
+
+        Integer cardId;
+        try {
+            cardId = Integer.parseInt(request.getCardId());
+        } catch (NumberFormatException e) {
+            throw new AppException(ErrorCode.PARKING_CARD_ID_INVALID);
+        }
+
+        Optional<ParkingRecord> parkingRecordOpt = StringUtils.hasText(request.getLicensePlate())
+                ? parkingRecordRepository.findByLicensePlateAndCard_CardId(request.getLicensePlate(), cardId)
+                : parkingRecordRepository.findByIdentifierAndCard_CardId(request.getIdentifier(), cardId);
+
+        ParkingRecord parkingRecord = parkingRecordOpt
+                .orElseThrow(() -> new AppException(ErrorCode.PARKING_RECORD_NOT_FOUND));
+
+        int fee = calculateParkingFee(parkingRecord);
+
+        Payment payment = Payment.builder()
+                .amount(fee)
+                .createAt(LocalDateTime.now())
+                .paymentType(PaymentType.PARKING)
+                .build();
+        paymentRepository.save(payment);
+
+        ParkingRecordHistory recordHistory = parkingRecordHistoryRepository.save(ParkingRecordHistory.builder()
+                .licensePlate(parkingRecord.getLicensePlate())
+                .identifier(parkingRecord.getIdentifier())
+                .vehicleType(parkingRecord.getVehicleType())
+                .card(parkingRecord.getCard())
+                .entryTime(parkingRecord.getEntryTime())
+                .exitTime(LocalDateTime.now())
+                .type(parkingRecord.getType())
+                .payment(payment)
+                .staffIn(parkingRecord.getStaffIn())
+                .staffOut(staff)
+                .build());
+        parkingRecordRepository.delete(parkingRecord);
+
+        return recordMapper.toParkingExitResponse(recordHistory);
+    }
+
+    public int calculateParkingFee(ParkingRecord record) {
+        Price price = priceRepository.findByType(record.getVehicleType())
+                .orElseThrow(() -> new AppException(ErrorCode.PARKING_PRICE_NOT_FOUND));
+        LocalDateTime entryTime = record.getEntryTime();
+        LocalDateTime exitTime = LocalDateTime.now();
+        Duration duration = Duration.between(entryTime, exitTime);
+        boolean isOver24h = duration.toDays() >= 1;
+
+        int fee;
+        if (record.getType() == ParkingType.MONTHLY) {
+            fee = 0;
+        } else if (isOver24h) {
+            fee = price.getDayPrice();
+        } else {
+            boolean isDayTime = entryTime.getHour() >= 5 && entryTime.getHour() <= 18;
+            fee = isDayTime ? price.getDayPrice() : price.getNightPrice();
+        }
+
+        return fee;
     }
 }

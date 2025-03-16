@@ -39,6 +39,8 @@ public enum ErrorCode {
     PARKING_CARD_IN_USED(4005, "Parking card being used", HttpStatus.BAD_REQUEST),
     PARKING_LICENSE_PLATE_EXISTED(4006, "Lisence plate existed", HttpStatus.BAD_REQUEST),
     PARKING_IDENTIFIER_EXISTED(4007, "License plate existed", HttpStatus.BAD_REQUEST),
+    PARKING_RECORD_NOT_FOUND(4008, "Record not found", HttpStatus.NOT_FOUND),
+    PARKING_PRICE_NOT_FOUND(4009, "Price not found", HttpStatus.NOT_FOUND),
 
     // System error
     SYSTEM_INTERNAL_ERROR(9001, "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),
