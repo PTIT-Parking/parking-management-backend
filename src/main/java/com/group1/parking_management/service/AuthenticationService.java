@@ -6,7 +6,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.group1.parking_management.dto.request.ChangePasswordRequest;
 import com.group1.parking_management.dto.request.LoginRequest;
 import com.group1.parking_management.dto.request.LogoutRequest;
 import com.group1.parking_management.dto.response.LoginResponse;
@@ -54,7 +56,7 @@ public class AuthenticationService {
 
         try {
             jwtUtil.validateToken(token);
-            long expiration = jwtUtil.getExpirationTime(token);
+            long expiration = jwtUtil.getExpirationTime(token) / 1000;
             long now = System.currentTimeMillis() / 1000;
             long ttl = expiration - now;
 
@@ -82,5 +84,23 @@ public class AuthenticationService {
                 .address(staff.getEmail())
                 .email(staff.getEmail())
                 .build();
+    }
+
+    @Transactional
+    public void changePassword(ChangePasswordRequest request) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName(); 
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_FOUND));
+        
+        if (!passwordEncoder.matches(request.getOldPassword(), account.getPassword())) {
+            throw new AppException(ErrorCode.AUTH_WRONG_PASSWORD);
+        }
+
+        if (passwordEncoder.matches(request.getNewPassword(), account.getPassword())) {
+            throw new AppException(ErrorCode.AUTH_PASSWORD_SAME_AS_OLD);
+        }
+
+        account.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        accountRepository.save(account);
     }
 }

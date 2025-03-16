@@ -15,6 +15,8 @@ public enum ErrorCode {
     AUTH_FORBIDDEN(1002, "Access denied", HttpStatus.FORBIDDEN),
     AUTH_UNAUTHENTICATED(1003, "Unauthenticated request", HttpStatus.UNAUTHORIZED),
     AUTH_UNAUTHORIZED(1004, "Unauthorized request", HttpStatus.FORBIDDEN),
+    AUTH_WRONG_PASSWORD(1005, "Password is incorrect", HttpStatus.BAD_REQUEST),
+    AUTH_PASSWORD_SAME_AS_OLD(1006, "New password must be different from the old password", HttpStatus.BAD_REQUEST),
     
     // Staff
     USERNAME_EXISTED(2001, "Username already exists", HttpStatus.BAD_REQUEST),

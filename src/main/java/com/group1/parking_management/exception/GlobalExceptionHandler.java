@@ -9,7 +9,7 @@ import com.group1.parking_management.dto.ApiResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(value = Exception.class)
+    @ExceptionHandler(value = RuntimeException.class)
     ResponseEntity<ApiResponse<Void>> handlingRuntimeException(RuntimeException exception) {
         return ResponseEntity
                 .badRequest()
