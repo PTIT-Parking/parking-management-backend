@@ -1,5 +1,7 @@
 package com.group1.parking_management.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,4 +12,8 @@ public interface ParkingRecordRepository extends JpaRepository<ParkingRecord, St
     boolean existsByCard_CardId(Integer cardId);
     boolean existsByLicensePlate(String licensePlate);
     boolean existsByIdentifier(String identifier);
+
+    Optional<ParkingRecord> findByLicensePlateAndCard_CardId(String licensePlate, Integer cardId);
+    Optional<ParkingRecord> findByIdentifierAndCard_CardId(String identifier, Integer cardId);
+
 }

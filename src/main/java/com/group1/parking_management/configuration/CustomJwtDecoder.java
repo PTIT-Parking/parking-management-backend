@@ -13,6 +13,8 @@ import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Component;
 
+import com.group1.parking_management.exception.AppException;
+import com.group1.parking_management.exception.ErrorCode;
 import com.group1.parking_management.util.JwtUtil;
 import com.nimbusds.jose.JOSEException;
 
@@ -33,7 +35,7 @@ public class CustomJwtDecoder implements JwtDecoder {
     public Jwt decode(String token) throws JwtException {
         try {
             if (!jwtUtil.validateToken(token)) {
-                throw new JwtException("Token invalid!");
+                throw new AppException(ErrorCode.JWT_INVALID);
             }
         } catch (JOSEException | ParseException e) {
             throw new JwtException(e.getMessage());
