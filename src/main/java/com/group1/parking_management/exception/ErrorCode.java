@@ -31,6 +31,15 @@ public enum ErrorCode {
     JWT_EXPIRED(3003, "JWT token has expired", HttpStatus.UNAUTHORIZED),
     JWT_UNSUPPORTED(3004, "Unsupported JWT token", HttpStatus.BAD_REQUEST),
 
+    // Parking Exception
+    PARKING_IDENTIFICATION_ERROR(4001, "Vehicle must have license plate or identifier", HttpStatus.BAD_REQUEST),
+    PARKING_VEHICLE_TYPE_NOT_FOUND(4002, "Vehicle type not found", HttpStatus.NOT_FOUND),
+    PARKING_CARD_ID_INVALID(4003, "Card id invalid", HttpStatus.BAD_REQUEST),
+    PARKING_CARD_NOT_FOUND(4004, "Parking card not found", HttpStatus.NOT_FOUND),
+    PARKING_CARD_IN_USED(4005, "Parking card being used", HttpStatus.BAD_REQUEST),
+    PARKING_LICENSE_PLATE_EXISTED(4006, "Lisence plate existed", HttpStatus.BAD_REQUEST),
+    PARKING_IDENTIFIER_EXISTED(4007, "License plate existed", HttpStatus.BAD_REQUEST),
+
     // System error
     SYSTEM_INTERNAL_ERROR(9001, "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),
     SYSTEM_UNKNOWN_ERROR(9999, "Unknown error", HttpStatus.INTERNAL_SERVER_ERROR);
