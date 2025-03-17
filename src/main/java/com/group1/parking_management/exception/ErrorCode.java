@@ -12,11 +12,14 @@ public enum ErrorCode {
     
     // Authentication & Authorization
     AUTH_INVALID_CREDENTIALS(1001, "Invalid username or password", HttpStatus.UNAUTHORIZED),
-    AUTH_FORBIDDEN(1002, "Access denied", HttpStatus.FORBIDDEN),
-    AUTH_UNAUTHENTICATED(1003, "Unauthenticated request", HttpStatus.UNAUTHORIZED),
-    AUTH_UNAUTHORIZED(1004, "Unauthorized request", HttpStatus.FORBIDDEN),
-    AUTH_WRONG_PASSWORD(1005, "Password is incorrect", HttpStatus.BAD_REQUEST),
-    AUTH_PASSWORD_SAME_AS_OLD(1006, "New password must be different from the old password", HttpStatus.BAD_REQUEST),
+    AUTH_USERNAME_INVALID(1002,"Username must be at least 4 characters", HttpStatus.BAD_REQUEST),
+    AUTH_PASSWORD_INVALID(1003, "Password must be at least 8 characters", HttpStatus.BAD_REQUEST),
+    AUTH_EMAIL_INVALID(1004, "Email must be ended with '@gmail.com'", HttpStatus.BAD_REQUEST),
+    AUTH_FORBIDDEN(1005, "Access denied", HttpStatus.FORBIDDEN),
+    AUTH_UNAUTHENTICATED(1006, "Unauthenticated request", HttpStatus.UNAUTHORIZED),
+    AUTH_UNAUTHORIZED(1007, "Unauthorized request", HttpStatus.FORBIDDEN),
+    AUTH_WRONG_PASSWORD(1008, "Password is incorrect", HttpStatus.BAD_REQUEST),
+    AUTH_PASSWORD_SAME_AS_OLD(1009, "New password must be different from the old password", HttpStatus.BAD_REQUEST),
     
     // Staff
     USERNAME_EXISTED(2001, "Username already exists", HttpStatus.BAD_REQUEST),
@@ -41,6 +44,15 @@ public enum ErrorCode {
     PARKING_IDENTIFIER_EXISTED(4007, "License plate existed", HttpStatus.BAD_REQUEST),
     PARKING_RECORD_NOT_FOUND(4008, "Record not found", HttpStatus.NOT_FOUND),
     PARKING_PRICE_NOT_FOUND(4009, "Price not found", HttpStatus.NOT_FOUND),
+
+    // Monthly Registration
+    MONTHLY_CUSTOMER_TYPE_INVALID(5001, "Customer type invalid", HttpStatus.BAD_REQUEST),
+    MONTHLY_VEHICLE_BEING_REGISTERED(5002, "Lisence plate is still registered", HttpStatus.BAD_REQUEST),
+    LECTURER_INPUT_ERROR(5003, "Lecturer must have lecturerId, and student fields must be empty", HttpStatus.BAD_REQUEST),
+    STUDENT_INPUT_ERROR(5004, "Student must have studentId, faculty, major, classInfo, and lecturerId must be empty", HttpStatus.BAD_REQUEST),
+
+    // Data error
+    ENUM_INVALID_VALUE(8001, "Invalid enum", HttpStatus.BAD_REQUEST),
 
     // System error
     SYSTEM_INTERNAL_ERROR(9001, "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),
