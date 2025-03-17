@@ -2,6 +2,7 @@ package com.group1.parking_management.entity;
 
 import java.time.LocalDate;
 
+import com.group1.parking_management.common.CustomerType;
 import com.group1.parking_management.common.Gender;
 
 import jakarta.persistence.Column;
@@ -29,8 +30,9 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String customerId;
     
-    @Column(length = 20)
-    private String customerType;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private CustomerType customerType;
     
     @Column(nullable = false, length = 100)
     private String name;

@@ -1,5 +1,8 @@
 package com.group1.parking_management.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +34,13 @@ public class ParkingController {
     public ApiResponse<ParkingExitResponse> registerExit(@RequestBody ParkingExitRequest request) {
         return ApiResponse.<ParkingExitResponse>builder()
                 .result(parkingService.processExit(request))
+                .build();
+    }
+
+    @GetMapping("/records")
+    public ApiResponse<List<ParkingEntryResponse>> getAllRecordInParking() {
+        return ApiResponse.<List<ParkingEntryResponse>>builder()
+                .result(parkingService.getAllRecordInParking())
                 .build();
     }
 }

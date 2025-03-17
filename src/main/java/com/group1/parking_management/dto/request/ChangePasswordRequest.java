@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 public class ChangePasswordRequest {
     private String oldPassword;
     @NotBlank
-    @Size(min = 8, message = "PASSWORD_INVALID")
+    @Size(min = 8, message = "AUTH_PASSWORD_INVALID")
     private String newPassword;
 }

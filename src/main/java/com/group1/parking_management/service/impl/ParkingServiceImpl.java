@@ -2,6 +2,7 @@ package com.group1.parking_management.service.impl;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -154,6 +155,12 @@ public class ParkingServiceImpl implements ParkingService {
         parkingRecordRepository.delete(parkingRecord);
 
         return recordMapper.toParkingExitResponse(recordHistory);
+    }
+
+    @PreAuthorize("hasRole('STAFF')")
+    public List<ParkingEntryResponse> getAllRecordInParking() {
+        return parkingRecordRepository.findAll().stream()
+                .map(recordMapper::toParkingEntryResponse).toList();
     }
 
     public int calculateParkingFee(ParkingRecord record) {

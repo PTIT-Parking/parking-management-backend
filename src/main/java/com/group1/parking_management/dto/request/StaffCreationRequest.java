@@ -17,11 +17,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class StaffCreationRequest {
     @NotBlank
-    @Size(min = 4, message = "USERNAME_INVALID")
+    @Size(min = 4, message = "AUTH_USERNAME_INVALID")
     private String username;
 
     @NotBlank
-    @Size(min = 8, message = "PASSWORD_INVALID")
+    @Size(min = 8, message = "AUTH_PASSWORD_INVALID")
     private String password;
 
     private String identification;
