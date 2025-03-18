@@ -38,6 +38,9 @@ public class MissingReport {
     
     @Column(length = 20)
     private String licensePlate;
+
+    @Column(length = 20)
+    private String identifier;
     
     @ManyToOne
     @JoinColumn(name = "vehicle_type", nullable = false)
@@ -62,14 +65,8 @@ public class MissingReport {
     @Column(nullable = false, length = 30)
     private String color;
     
-    @Column(nullable = false, length = 255)
-    private String identificationImgUrl;
-    
-    @Column(nullable = false, length = 255)
-    private String vehicleImgUrl;
-    
-    @Column(length = 255)
-    private String vehicleRegistrationImgUrl;
+    @Column(nullable = false, length = 30)
+    private String identification;
     
     @OneToOne
     @JoinColumn(name = "payment_id", nullable = false)

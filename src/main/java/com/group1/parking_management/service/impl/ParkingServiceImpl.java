@@ -54,6 +54,7 @@ public class ParkingServiceImpl implements ParkingService {
     private final PaymentRepository paymentRepository;
     private final ParkingRecordHistoryRepository parkingRecordHistoryRepository;
 
+    @Override
     @Transactional
     @PreAuthorize("hasRole('STAFF')")
     public ParkingEntryResponse registerEntry(ParkingEntryRequest request) {
@@ -106,6 +107,7 @@ public class ParkingServiceImpl implements ParkingService {
         return recordMapper.toParkingEntryResponse(parkingRecordRepository.save(parkingRecord));
     }
 
+    @Override
     @Transactional
     @PreAuthorize("hasRole('STAFF')")
     public ParkingExitResponse processExit(ParkingExitRequest request) {
@@ -140,23 +142,14 @@ public class ParkingServiceImpl implements ParkingService {
                 .build();
         paymentRepository.save(payment);
 
-        ParkingRecordHistory recordHistory = parkingRecordHistoryRepository.save(ParkingRecordHistory.builder()
-                .licensePlate(parkingRecord.getLicensePlate())
-                .identifier(parkingRecord.getIdentifier())
-                .vehicleType(parkingRecord.getVehicleType())
-                .card(parkingRecord.getCard())
-                .entryTime(parkingRecord.getEntryTime())
-                .exitTime(LocalDateTime.now())
-                .type(parkingRecord.getType())
-                .payment(payment)
-                .staffIn(parkingRecord.getStaffIn())
-                .staffOut(staff)
-                .build());
+        ParkingRecordHistory recordHistory = parkingRecordHistoryRepository.save(recordToHistory(parkingRecord, payment, staff));
+
         parkingRecordRepository.delete(parkingRecord);
 
         return recordMapper.toParkingExitResponse(recordHistory);
     }
 
+    @Override
     @PreAuthorize("hasRole('STAFF')")
     public List<ParkingEntryResponse> getAllRecordInParking() {
         return parkingRecordRepository.findAll().stream()
@@ -182,5 +175,20 @@ public class ParkingServiceImpl implements ParkingService {
         }
 
         return fee;
+    }
+
+    public ParkingRecordHistory recordToHistory(ParkingRecord record, Payment payment, Account staff) {
+        return ParkingRecordHistory.builder()
+                .licensePlate(record.getLicensePlate())
+                .identifier(record.getIdentifier())
+                .vehicleType(record.getVehicleType())
+                .card(record.getCard())
+                .entryTime(record.getEntryTime())
+                .exitTime(LocalDateTime.now())
+                .type(record.getType())
+                .payment(payment)
+                .staffIn(record.getStaffIn())
+                .staffOut(staff)
+                .build();
     }
 }
