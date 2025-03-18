@@ -2,11 +2,10 @@ package com.group1.parking_management.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,13 +19,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "price")
 public class Price {
-    @Id
-    @Column(length = 36)
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String priceId;
     
-    @ManyToOne
-    @JoinColumn(name = "type_id", nullable = false)
+    @Id
+    private String vehicleTypeId;
+    
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "type_id")
     private VehicleType type;
     
     @Column(nullable = false)

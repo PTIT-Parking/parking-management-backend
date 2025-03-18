@@ -100,7 +100,7 @@ public class MonthlyRegistrationServiceImpl implements MonthlyRegistrationServic
                     .build());
         }
 
-        Price price = priceRepository.findByType(vehicleType)
+        Price price = priceRepository.findById(vehicleType.getId())
                 .orElseThrow(() -> new AppException(ErrorCode.PARKING_PRICE_NOT_FOUND));
         int fee = price.getMonthlyPrice() * request.getDurationInMonths();
         LocalDateTime issueDate = LocalDateTime.now();

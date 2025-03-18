@@ -14,6 +14,7 @@ public interface ParkingRecordRepository extends JpaRepository<ParkingRecord, St
     boolean existsByIdentifier(String identifier);
 
     Optional<ParkingRecord> findByLicensePlate(String licensePlate);
+    Optional<ParkingRecord> findByIdentifier(String identifier);
     Optional<ParkingRecord> findByLicensePlateAndCard_CardId(String licensePlate, Integer cardId);
     Optional<ParkingRecord> findByIdentifierAndCard_CardId(String identifier, Integer cardId);
 

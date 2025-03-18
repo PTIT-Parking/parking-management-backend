@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.group1.parking_management.common.PaymentType;
 import com.group1.parking_management.dto.request.MissingReportRequest;
@@ -51,8 +52,16 @@ public class MissingReportServiceImpl implements MissingReportService {
         Account staff = accountRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_FOUND));
 
-        ParkingRecord record = parkingRecordRepository.findByLicensePlate(request.getLicensePlate())
-                .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_IN_PARKING));
+        ParkingRecord record = null;
+        if (!StringUtils.hasText(request.getLicensePlate()) && !StringUtils.hasText(request.getIdentifier())) {
+            throw new AppException(ErrorCode.PARKING_IDENTIFICATION_ERROR);
+        } else if (StringUtils.hasText(request.getLicensePlate())) {
+            record = parkingRecordRepository.findByLicensePlate(request.getLicensePlate())
+                    .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_IN_PARKING));
+        } else {
+            record = parkingRecordRepository.findByIdentifier(request.getIdentifier())
+                    .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_IN_PARKING));
+        }
 
         VehicleType vehicleType = vehicleTypeRepository.findById(request.getVehicleTypeId())
                 .orElseThrow(() -> new AppException(ErrorCode.PARKING_VEHICLE_TYPE_NOT_FOUND));
