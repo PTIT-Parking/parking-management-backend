@@ -100,7 +100,7 @@ public class MissingReportServiceImpl implements MissingReportService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public List<MissingReportResponse> getAllMissingReport() {
-        return missingReportRepository.findAll().stream().map(missingReportMapper::toReportResponse).toList();
+        return missingReportRepository.findAllByOrderByCreateAtDesc().stream().map(missingReportMapper::toReportResponse).toList();
     }
 
 }
