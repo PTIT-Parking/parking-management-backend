@@ -157,7 +157,7 @@ public class ParkingServiceImpl implements ParkingService {
     }
 
     public int calculateParkingFee(ParkingRecord record) {
-        Price price = priceRepository.findByType(record.getVehicleType())
+        Price price = priceRepository.findById(record.getVehicleType().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.PARKING_PRICE_NOT_FOUND));
         LocalDateTime entryTime = record.getEntryTime();
         LocalDateTime exitTime = LocalDateTime.now();
