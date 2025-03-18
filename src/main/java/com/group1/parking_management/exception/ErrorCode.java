@@ -51,6 +51,9 @@ public enum ErrorCode {
     LECTURER_INPUT_ERROR(5003, "Lecturer must have lecturerId, and student fields must be empty", HttpStatus.BAD_REQUEST),
     STUDENT_INPUT_ERROR(5004, "Student must have studentId, faculty, major, classInfo, and lecturerId must be empty", HttpStatus.BAD_REQUEST),
 
+    // Missing Report
+    VEHICLE_NOT_IN_PARKING(6001, "Vehicle not in parking", HttpStatus.BAD_REQUEST),
+
     // Data error
     ENUM_INVALID_VALUE(8001, "Invalid enum", HttpStatus.BAD_REQUEST),
 

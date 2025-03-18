@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = AuthorizationDeniedException.class)
     ResponseEntity<ApiResponse<Void>> handlingAuthorizationDeniedException(AuthorizationDeniedException exception) {
-        ErrorCode errorCode = ErrorCode.AUTH_UNAUTHENTICATED;
+        ErrorCode errorCode = ErrorCode.AUTH_UNAUTHORIZED;
         return ResponseEntity
                 .status(errorCode.getStatusCode())
                 .body(ApiResponse.<Void>builder()

@@ -55,6 +55,7 @@ public class MonthlyRegistrationServiceImpl implements MonthlyRegistrationServic
     private final PaymentRepository paymentRepository;
     private final MonthlyRegistrationMapper monthlyRegistrationMapper;
 
+    @Override
     @Transactional
     @PreAuthorize("hasRole('STAFF')")
     public MonthlyRegistrationResponse createMonthlyRegistration(MonthlyRegistrationRequest request) {
@@ -123,12 +124,15 @@ public class MonthlyRegistrationServiceImpl implements MonthlyRegistrationServic
         return monthlyRegistrationMapper.activeToResponse(activeMonthlyRegistration);
     }
 
-    @PreAuthorize("hasRole('STAFF')")
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public List<MonthlyRegistrationResponse> getAllActiveRegistration() {
         return activeMonthlyRegistrationRepository.findAllByOrderByIssueDateDesc().stream()
                 .map(monthlyRegistrationMapper::activeToResponse).toList();
     }
 
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public List<MonthlyRegistrationResponse> getAllExpireRegistration() {
         return expireMonthlyRegistrationRepository.findAllByOrderByIssueDateDesc().stream()
                 .map(monthlyRegistrationMapper::expireToResponse).toList();
