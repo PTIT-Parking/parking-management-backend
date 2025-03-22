@@ -77,17 +77,17 @@ src/main/java/com/group1/parking_management/
 
 ### Authentication
 ```
-POST /api/auth/login          # Authenticate user
-POST /api/auth/logout         # Logout and blacklist token
+POST /api/auth/login           # Authenticate user
+POST /api/auth/logout          # Logout and blacklist token
 PUT  /api/auth/change-password # Update password
-GET  /api/auth/my-info        # Current user information
+GET  /api/auth/my-info         # Current user information
 ```
 
 ### Admin Operations
 ```
-GET|POST|PUT /api/admin/staffs    # Staff management
-GET  /api/statistic/revenue       # Revenue statistics
-GET  /api/statistic/traffic       # Traffic analysis
+GET|POST|PUT /api/admin/staffs            # Staff management
+GET          /api/statistic/revenue       # Revenue statistics
+GET          /api/statistic/traffic       # Traffic analysis
 ```
 
 ### Parking Operations
