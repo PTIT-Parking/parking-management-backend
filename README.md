@@ -158,8 +158,6 @@ The application automatically initializes:
 - JSR-380 request validation
 - Comprehensive exception handling
 
-## License
-[Your License]
-
 ## Contributors
-- Group 1
+- Hoang Phi Long
+...
