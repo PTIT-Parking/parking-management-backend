@@ -3,13 +3,13 @@ version: '3.8'
 services:
   backend:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
     container_name: parking-management-backend
     ports:
       - "8080:8080"
     env_file:
-      - ./backend/.env
+      - .env
     depends_on:
       - mysql
       - redis
