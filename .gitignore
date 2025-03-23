@@ -37,3 +37,6 @@ build/
 
 ### hs_err_pid ###
 hs_err_pid*.log
+
+### data folder ###
+data/
