@@ -36,7 +36,7 @@ build/
 .env
 
 ### hs_err_pid ###
-hs_err_pid*.log
+*.log
 
 ### data folder ###
 data/
