@@ -4,6 +4,7 @@
 ![Java](https://img.shields.io/badge/Java-21-orange.svg)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0-blue.svg)
 ![Redis](https://img.shields.io/badge/Redis-latest-red.svg)
+![Docker](https://img.shields.io/badge/Docker-latest-blue.svg)
 
 A comprehensive backend solution for managing parking operations, vehicle tracking, and revenue management.
 
@@ -22,6 +23,7 @@ This project provides a complete backend implementation for a Parking Management
 - **Hibernate** ORM
 - **MapStruct** (object mapping)
 - **Project Lombok**
+- **Docker & Docker Compose**
 
 ## Features
 
@@ -105,13 +107,15 @@ GET  /api/monthly-cards      # View registrations
 
 ## Setup & Installation
 
-### Prerequisites
+### Method 1: Traditional Setup
+
+#### Prerequisites
 - Java 21+
 - Maven
 - MySQL Database
 - Redis Server
 
-### Configuration
+#### Configuration
 1. Clone the repository:
 ```bash
 git clone <repository-url>
@@ -140,6 +144,66 @@ mvn clean install
 mvn spring-boot:run -Dspring.profiles.active=dev
 ```
 
+### Method 2: Docker Setup
+
+#### Prerequisites
+- Docker
+- Docker Compose
+
+#### Running with Docker Compose
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd parking-management-backend
+```
+
+2. Build and start all services:
+```bash
+docker-compose up --build
+```
+
+3. Start in detached mode (background):
+```bash
+docker-compose up -d --build
+```
+
+4. View logs:
+```bash
+docker-compose logs -f
+```
+
+5. Stop all services:
+```bash
+docker-compose down
+```
+
+6. Stop and remove volumes:
+```bash
+docker-compose down -v
+```
+
+#### Docker Environment
+The Docker setup includes:
+- Spring Boot application
+- MySQL 8.0 database
+- Redis 7.0 server
+
+All containers are connected via a Docker network and properly configured to work together. The application container depends on MySQL and Redis being healthy before starting.
+
+#### Database Connection in Docker
+MySQL database is accessible:
+- Within containers: mysql:3306
+- From host machine: localhost:3308
+- Username: root
+- Password: password
+- Database name: parking_management
+
+#### Redis Connection in Docker
+Redis is accessible:
+- Within containers: redis:6379
+- From host machine: localhost:6379
+
 ### Initial Setup
 The application automatically initializes:
 - Default admin (username: `admin`, password: `admin`)
@@ -157,6 +221,7 @@ The application automatically initializes:
 - Domain-specific error codes
 - JSR-380 request validation
 - Comprehensive exception handling
+- Docker ready for development and production
 
 ## Contributors
 - Hoang Phi Long
