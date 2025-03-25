@@ -40,3 +40,6 @@ build/
 
 ### data folder ###
 data/
+
+### application.yaml ###
+application.yaml
