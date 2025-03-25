@@ -13,6 +13,7 @@ import com.group1.parking_management.dto.request.ParkingEntryRequest;
 import com.group1.parking_management.dto.request.ParkingExitRequest;
 import com.group1.parking_management.dto.response.ParkingEntryResponse;
 import com.group1.parking_management.dto.response.ParkingExitResponse;
+import com.group1.parking_management.dto.response.VehicleTypeResponse;
 import com.group1.parking_management.service.ParkingService;
 
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,13 @@ public class ParkingController {
     public ApiResponse<List<ParkingEntryResponse>> getAllRecordInParking() {
         return ApiResponse.<List<ParkingEntryResponse>>builder()
                 .result(parkingService.getAllRecordInParking())
+                .build();
+    }
+
+    @GetMapping("/vehicle-types")
+    public ApiResponse<List<VehicleTypeResponse>> getAllVehicleType() {
+        return ApiResponse.<List<VehicleTypeResponse>>builder()
+                .result(parkingService.getAllVehicleType())
                 .build();
     }
 }

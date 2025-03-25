@@ -8,9 +8,9 @@ spring:
     name: parking-management
 
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/parking_management
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3307}/parking_management
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:Long@12082004}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:

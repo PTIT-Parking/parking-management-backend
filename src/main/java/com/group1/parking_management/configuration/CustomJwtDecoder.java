@@ -14,7 +14,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Component;
 
 import com.group1.parking_management.exception.AppException;
-import com.group1.parking_management.exception.ErrorCode;
 import com.group1.parking_management.util.JwtUtil;
 import com.nimbusds.jose.JOSEException;
 
@@ -34,18 +33,20 @@ public class CustomJwtDecoder implements JwtDecoder {
     @Override
     public Jwt decode(String token) throws JwtException {
         try {
-            if (!jwtUtil.validateToken(token)) {
-                throw new AppException(ErrorCode.JWT_INVALID);
+            jwtUtil.validateToken(token);
+            if (Objects.isNull(nimbusJwtDecoder)) {
+                SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(), "HS512");
+                nimbusJwtDecoder = NimbusJwtDecoder.withSecretKey(secretKeySpec).macAlgorithm(MacAlgorithm.HS512).build();
             }
-        } catch (JOSEException | ParseException e) {
+            return nimbusJwtDecoder.decode(token);
+        } catch (AppException e) {
             throw new JwtException(e.getMessage());
+        } catch (ParseException | JOSEException e) {
+            throw new JwtException("Invalid JWT token: " + e.getMessage());
+        } catch (Exception e) {
+            throw new JwtException("Error processing JWT token");
         }
         
-        if (Objects.isNull(nimbusJwtDecoder)) {
-            SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(), "HS512");
-            nimbusJwtDecoder = NimbusJwtDecoder.withSecretKey(secretKeySpec).macAlgorithm(MacAlgorithm.HS512).build();
-        }
 
-        return nimbusJwtDecoder.decode(token);
     }
 }

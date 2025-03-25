@@ -58,23 +58,57 @@ public class JwtUtil {
     }
 
     public boolean validateToken(String token) throws ParseException, JOSEException {
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        JWSVerifier verifier = new MACVerifier(secretKey.getBytes());
-        boolean verified = signedJWT.verify(verifier);
-        Date expireTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-        if (!(verified && expireTime.after(new Date()))) {
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(token);
+            JWSVerifier verifier = new MACVerifier(secretKey.getBytes());
+            boolean verified = signedJWT.verify(verifier);
+            if (!verified) {
+                log.warn("JWT signature verification failed");
+                throw new AppException(ErrorCode.AUTH_UNAUTHENTICATED);
+            }
+            Date expireTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+            if (!(verified && expireTime.after(new Date()))) {
+                throw new AppException(ErrorCode.AUTH_UNAUTHENTICATED);
+            }
+            String issuer = signedJWT.getJWTClaimsSet().getIssuer();
+            if (!issuerUri.equals(issuer)) {
+                log.warn("JWT issuer invalid: {}", issuer);
+                throw new AppException(ErrorCode.AUTH_UNAUTHENTICATED);
+            }
+            return true;
+        } catch (ParseException e) {
+            log.error("JWT parsing failed: {}", e.getMessage());
+            throw new AppException(ErrorCode.JWT_INVALID);
+        } catch (JOSEException e) {
+            log.error("JWT verification error: {}", e.getMessage());
+            throw new AppException(ErrorCode.AUTH_UNAUTHENTICATED);
+        } catch (Exception e) {
+            log.error("Unexpected JWT validation error: {}", e.getMessage());
             throw new AppException(ErrorCode.AUTH_UNAUTHENTICATED);
         }
-        return true;
     }
 
     public String getRole(String token) throws ParseException {
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        return (String) signedJWT.getJWTClaimsSet().getClaim("scope");
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(token);
+            return (String) signedJWT.getJWTClaimsSet().getClaim("scope");
+        } catch (ParseException e) {
+            log.error("Failed to parse JWT when extracting role: {}", e.getMessage());
+            throw new AppException(ErrorCode.JWT_INVALID);
+        }
     }
 
     public long getExpirationTime(String token) throws ParseException {
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        return signedJWT.getJWTClaimsSet().getExpirationTime().getTime();
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(token);
+            Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+            if (expirationTime == null) {
+                throw new AppException(ErrorCode.JWT_INVALID);
+            }
+            return expirationTime.getTime();
+        } catch (ParseException e) {
+            log.error("Failed to parse JWT when getting expiration time: {}", e.getMessage());
+            throw new AppException(ErrorCode.JWT_INVALID);
+        }
     }
 }

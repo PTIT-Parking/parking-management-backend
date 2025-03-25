@@ -17,6 +17,7 @@ import com.group1.parking_management.dto.request.ParkingEntryRequest;
 import com.group1.parking_management.dto.request.ParkingExitRequest;
 import com.group1.parking_management.dto.response.ParkingEntryResponse;
 import com.group1.parking_management.dto.response.ParkingExitResponse;
+import com.group1.parking_management.dto.response.VehicleTypeResponse;
 import com.group1.parking_management.entity.Account;
 import com.group1.parking_management.entity.ParkingCard;
 import com.group1.parking_management.entity.ParkingRecord;
@@ -27,6 +28,7 @@ import com.group1.parking_management.entity.VehicleType;
 import com.group1.parking_management.exception.AppException;
 import com.group1.parking_management.exception.ErrorCode;
 import com.group1.parking_management.mapper.RecordMapper;
+import com.group1.parking_management.mapper.VehicleTypeMapper;
 import com.group1.parking_management.repository.AccountRepository;
 import com.group1.parking_management.repository.ActiveMonthlyRegistrationRepository;
 import com.group1.parking_management.repository.ParkingCardRepository;
@@ -53,6 +55,7 @@ public class ParkingServiceImpl implements ParkingService {
     private final PriceRepository priceRepository;
     private final PaymentRepository paymentRepository;
     private final ParkingRecordHistoryRepository parkingRecordHistoryRepository;
+    private final VehicleTypeMapper vehicleTypeMapper;
 
     @Override
     @Transactional
@@ -190,5 +193,11 @@ public class ParkingServiceImpl implements ParkingService {
                 .staffIn(record.getStaffIn())
                 .staffOut(staff)
                 .build();
+    }
+
+    @Override
+    @PreAuthorize("hasRole('STAFF')")
+    public List<VehicleTypeResponse> getAllVehicleType() {
+        return vehicleTypeRepository.findAll().stream().map(vehicleTypeMapper::toVehicleTypeResponse).toList();
     }
 }
