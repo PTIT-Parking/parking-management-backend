@@ -1,7 +1,9 @@
 package com.group1.parking_management.service.impl;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +17,7 @@ import com.group1.parking_management.common.ParkingType;
 import com.group1.parking_management.common.PaymentType;
 import com.group1.parking_management.dto.request.ParkingEntryRequest;
 import com.group1.parking_management.dto.request.ParkingExitRequest;
+import com.group1.parking_management.dto.response.TodayTrafficResponse;
 import com.group1.parking_management.dto.response.ParkingEntryResponse;
 import com.group1.parking_management.dto.response.ParkingExitResponse;
 import com.group1.parking_management.dto.response.VehicleTypeResponse;
@@ -145,7 +148,8 @@ public class ParkingServiceImpl implements ParkingService {
                 .build();
         paymentRepository.save(payment);
 
-        ParkingRecordHistory recordHistory = parkingRecordHistoryRepository.save(recordToHistory(parkingRecord, payment, staff));
+        ParkingRecordHistory recordHistory = parkingRecordHistoryRepository
+                .save(recordToHistory(parkingRecord, payment, staff));
 
         parkingRecordRepository.delete(parkingRecord);
 
@@ -199,4 +203,61 @@ public class ParkingServiceImpl implements ParkingService {
     public List<VehicleTypeResponse> getAllVehicleType() {
         return vehicleTypeRepository.findAll().stream().map(vehicleTypeMapper::toVehicleTypeResponse).toList();
     }
+
+    @Override
+    public List<TodayTrafficResponse> getTodayTraffic() {
+        LocalDate today = LocalDate.now();
+        List<TodayTrafficResponse> result = new ArrayList<>();
+
+        // get start time and end time of day
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.atTime(23, 59, 59);
+
+        // get entry records of day
+        List<ParkingRecord> currentRecords = parkingRecordRepository.findByEntryTimeBetween(startOfDay, endOfDay);
+        // entry record from in parking record
+        for (ParkingRecord record : currentRecords) {
+            TodayTrafficResponse dto = TodayTrafficResponse.builder()
+                    .licensePlate(record.getLicensePlate())
+                    .vehicleType(record.getVehicleType().getName())
+                    .ticketType(record.getType().toString())
+                    .timestamp(record.getEntryTime())
+                    .eventType("ENTRY")
+                    .build();
+
+            result.add(dto);
+        }
+
+        // get exits records of day
+        List<ParkingRecordHistory> historyRecords = parkingRecordHistoryRepository.findByExitTimeBetween(
+                startOfDay, endOfDay);
+
+        for (ParkingRecordHistory record : historyRecords) {
+            // entry record from history
+            if (record.getEntryTime().isAfter(startOfDay) && record.getEntryTime().isBefore(endOfDay)) {
+                TodayTrafficResponse entryDto = TodayTrafficResponse.builder()
+                        .licensePlate(record.getLicensePlate())
+                        .vehicleType(record.getVehicleType().getName())
+                        .ticketType(record.getType().toString())
+                        .timestamp(record.getEntryTime())
+                        .eventType("ENTRY")
+                        .build();
+
+                result.add(entryDto);
+            }
+            // exit record from history
+            TodayTrafficResponse exitDto = TodayTrafficResponse.builder()
+                    .licensePlate(record.getLicensePlate())
+                    .vehicleType(record.getVehicleType().getName())
+                    .ticketType(record.getType().toString())
+                    .timestamp(record.getExitTime())
+                    .eventType("EXIT")
+                    .build();
+
+            result.add(exitDto);
+        }
+        result.sort((a, b) -> b.getTimestamp().compareTo(a.getTimestamp()));
+        return result;
+    }
+
 }

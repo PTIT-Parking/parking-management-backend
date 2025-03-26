@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.group1.parking_management.dto.ApiResponse;
 import com.group1.parking_management.dto.request.ParkingEntryRequest;
 import com.group1.parking_management.dto.request.ParkingExitRequest;
+import com.group1.parking_management.dto.response.TodayTrafficResponse;
 import com.group1.parking_management.dto.response.ParkingEntryResponse;
 import com.group1.parking_management.dto.response.ParkingExitResponse;
 import com.group1.parking_management.dto.response.VehicleTypeResponse;
@@ -49,6 +50,13 @@ public class ParkingController {
     public ApiResponse<List<VehicleTypeResponse>> getAllVehicleType() {
         return ApiResponse.<List<VehicleTypeResponse>>builder()
                 .result(parkingService.getAllVehicleType())
+                .build();
+    }
+
+    @GetMapping("/today")
+    public ApiResponse<List<TodayTrafficResponse>> getTodayTraffic() {
+        return ApiResponse.<List<TodayTrafficResponse>>builder()
+                .result(parkingService.getTodayTraffic())
                 .build();
     }
 }
