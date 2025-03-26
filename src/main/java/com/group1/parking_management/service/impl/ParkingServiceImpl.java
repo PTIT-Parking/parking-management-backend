@@ -153,7 +153,6 @@ public class ParkingServiceImpl implements ParkingService {
     }
 
     @Override
-    @PreAuthorize("hasRole('STAFF')")
     public List<ParkingEntryResponse> getAllRecordInParking() {
         return parkingRecordRepository.findAll().stream()
                 .map(recordMapper::toParkingEntryResponse).toList();
