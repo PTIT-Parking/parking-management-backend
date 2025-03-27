@@ -86,24 +86,22 @@ public class StaffServiceImpl implements StaffService {
 
         Staff staff = staffRepository.findByIdWithAccount(staffId)
                 .orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_FOUND));
-        if (staffRepository.existsByIdentification(request.getIdentification()) && !staff.getIdentification().equals(request.getIdentification())) {
+        if (request.getIdentification() != null &&
+                !staff.getIdentification().equals(request.getIdentification()) &&
+                staffRepository.existsByIdentification(request.getIdentification())) {
             throw new AppException(ErrorCode.STAFF_IDENTIFICATION_EXISTED);
         }
-        if (request.getUsername() != null || request.getPassword() != null) {
+        if (request.getUsername() != null) {
             Account account = staff.getAccount();
 
-            if (request.getUsername() != null) {
-                if (!account.getUsername().equals(request.getUsername())
-                        && accountRepository.existsByUsername(request.getUsername())) {
+            // Check if username has changed
+            if (!account.getUsername().equals(request.getUsername())) {
+                if (accountRepository.existsByUsername(request.getUsername())) {
                     throw new AppException(ErrorCode.USERNAME_EXISTED);
                 }
                 account.setUsername(request.getUsername());
+                accountRepository.save(account);
             }
-
-            if (request.getPassword() != null) {
-                account.setPassword(passwordEncoder.encode(request.getPassword()));
-            }
-            accountRepository.save(account);
         }
 
         // Other information using mapper

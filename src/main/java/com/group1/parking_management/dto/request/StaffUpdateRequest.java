@@ -5,8 +5,6 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.group1.parking_management.common.Gender;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,10 +18,6 @@ import lombok.NoArgsConstructor;
 public class  StaffUpdateRequest {
 
     private String username;
-
-    @NotBlank
-    @Size(min = 8, message = "PASSWORD_INVALID")
-    private String password;
 
     private String identification;
 
