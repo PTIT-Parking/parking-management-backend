@@ -86,7 +86,7 @@ public class StaffServiceImpl implements StaffService {
 
         Staff staff = staffRepository.findByIdWithAccount(staffId)
                 .orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_FOUND));
-        if (staffRepository.existsByIdentification(request.getIdentification())) {
+        if (staffRepository.existsByIdentification(request.getIdentification()) && !staff.getIdentification().equals(request.getIdentification())) {
             throw new AppException(ErrorCode.STAFF_IDENTIFICATION_EXISTED);
         }
         if (request.getUsername() != null || request.getPassword() != null) {
