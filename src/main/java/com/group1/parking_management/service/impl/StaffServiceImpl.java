@@ -52,16 +52,16 @@ public class StaffServiceImpl implements StaffService {
         account = accountRepository.save(account);
 
         Staff staff = Staff.builder()
-            .account(account)
-            .identification(request.getIdentification())
-            .name(request.getName())
-            .dob(request.getDob())
-            .gender(request.getGender())
-            .phoneNumber(request.getPhoneNumber())
-            .address(request.getAddress())
-            .email(request.getEmail())
-            .isActive(true)
-            .build();
+                .account(account)
+                .identification(request.getIdentification())
+                .name(request.getName())
+                .dob(request.getDob())
+                .gender(request.getGender())
+                .phoneNumber(request.getPhoneNumber())
+                .address(request.getAddress())
+                .email(request.getEmail())
+                .isActive(true)
+                .build();
 
         staffRepository.save(staff);
 
@@ -86,11 +86,15 @@ public class StaffServiceImpl implements StaffService {
 
         Staff staff = staffRepository.findByIdWithAccount(staffId)
                 .orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_FOUND));
+        if (staffRepository.existsByIdentification(request.getIdentification())) {
+            throw new AppException(ErrorCode.STAFF_IDENTIFICATION_EXISTED);
+        }
         if (request.getUsername() != null || request.getPassword() != null) {
             Account account = staff.getAccount();
 
             if (request.getUsername() != null) {
-                if (!account.getUsername().equals(request.getUsername()) && accountRepository.existsByUsername(request.getUsername())) {
+                if (!account.getUsername().equals(request.getUsername())
+                        && accountRepository.existsByUsername(request.getUsername())) {
                     throw new AppException(ErrorCode.USERNAME_EXISTED);
                 }
                 account.setUsername(request.getUsername());
@@ -102,7 +106,7 @@ public class StaffServiceImpl implements StaffService {
             accountRepository.save(account);
         }
 
-        // Other information using mapper 
+        // Other information using mapper
         staffMapper.updateFromStaffRequest(staff, request);
 
         return staffMapper.toStaffResponse(staffRepository.save(staff));
