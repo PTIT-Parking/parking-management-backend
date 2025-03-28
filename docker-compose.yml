@@ -49,11 +49,12 @@ services:
           "localhost",
           "-u",
           "root",
-          "-ppassword",
+          "-p$$MYSQL_ROOT_PASSWORD",
         ]
       interval: 10s
       timeout: 10s
       retries: 10
+      start_period: 30s
 
   redis:
     image: redis:7.0-alpine

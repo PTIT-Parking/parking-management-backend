@@ -8,10 +8,12 @@ spring:
     name: parking-management
 
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3309}/parking_management
+    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/parking_management
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PASSWORD:password}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      initialization-fail-timeout: 60000
 
   jpa:
     hibernate:
