@@ -21,10 +21,11 @@ import lombok.NoArgsConstructor;
 public class Price {
     
     @Id
+    @Column(name = "type_id")
     private String vehicleTypeId;
     
-    @OneToOne
     @MapsId
+    @OneToOne
     @JoinColumn(name = "type_id")
     private VehicleType type;
     
