@@ -1,6 +1,6 @@
 -- Thêm tài khoản admin
 INSERT INTO account (account_id, username, password, role)
-VALUES (UUID(), 'admin', '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', 'ADMIN')
+VALUES (UUID(), 'admin', '$2a$10$riOsq0JyAqDzFCXShMPvxeqILBKQnYdZik/ZYpeeEEodkyCMkf6Pq', 'ADMIN')
 ON DUPLICATE KEY UPDATE username = username;
 
 -- Thêm các loại phương tiện
