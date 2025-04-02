@@ -125,7 +125,6 @@ public class MonthlyRegistrationServiceImpl implements MonthlyRegistrationServic
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
     public List<MonthlyRegistrationResponse> getAllActiveRegistration() {
         return activeMonthlyRegistrationRepository.findAllByOrderByIssueDateDesc().stream()
                 .map(monthlyRegistrationMapper::activeToResponse).toList();
