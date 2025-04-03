@@ -48,8 +48,9 @@ public enum ErrorCode {
     // Monthly Registration
     MONTHLY_CUSTOMER_TYPE_INVALID(5001, "Customer type invalid", HttpStatus.BAD_REQUEST),
     MONTHLY_VEHICLE_BEING_REGISTERED(5002, "Lisence plate is still registered", HttpStatus.BAD_REQUEST),
-    LECTURER_INPUT_ERROR(5003, "Lecturer must have lecturerId, and student fields must be empty", HttpStatus.BAD_REQUEST),
-    STUDENT_INPUT_ERROR(5004, "Student must have studentId, faculty, major, classInfo, and lecturerId must be empty", HttpStatus.BAD_REQUEST),
+    MONTHLY_VEHICLE_TYPE_NOT_EQUALS_TO_RECORD(5003, "The vehicle type you choose not equals with vehicle type in record", HttpStatus.BAD_REQUEST),
+    LECTURER_INPUT_ERROR(5004, "Lecturer must have lecturerId, and student fields must be empty", HttpStatus.BAD_REQUEST),
+    STUDENT_INPUT_ERROR(5005, "Student must have studentId, faculty, major, classInfo, and lecturerId must be empty", HttpStatus.BAD_REQUEST),
 
     // Missing Report
     VEHICLE_NOT_IN_PARKING(6001, "Vehicle not in parking", HttpStatus.BAD_REQUEST),

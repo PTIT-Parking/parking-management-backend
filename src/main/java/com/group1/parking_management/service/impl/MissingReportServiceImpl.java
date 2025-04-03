@@ -66,6 +66,10 @@ public class MissingReportServiceImpl implements MissingReportService {
         VehicleType vehicleType = vehicleTypeRepository.findById(request.getVehicleTypeId())
                 .orElseThrow(() -> new AppException(ErrorCode.PARKING_VEHICLE_TYPE_NOT_FOUND));
 
+        if (vehicleType != record.getVehicleType()) {
+            throw new AppException(ErrorCode.MONTHLY_VEHICLE_TYPE_NOT_EQUALS_TO_RECORD);
+        }
+
         Payment payment = Payment.builder()
                 .amount(50000)
                 .createAt(LocalDateTime.now())
@@ -100,7 +104,8 @@ public class MissingReportServiceImpl implements MissingReportService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public List<MissingReportResponse> getAllMissingReport() {
-        return missingReportRepository.findAllByOrderByCreateAtDesc().stream().map(missingReportMapper::toReportResponse).toList();
+        return missingReportRepository.findAllByOrderByCreateAtDesc().stream()
+                .map(missingReportMapper::toReportResponse).toList();
     }
 
 }
