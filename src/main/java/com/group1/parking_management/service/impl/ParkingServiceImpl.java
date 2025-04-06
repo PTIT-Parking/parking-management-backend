@@ -219,7 +219,8 @@ public class ParkingServiceImpl implements ParkingService {
         // entry record from in parking record
         for (ParkingRecord record : currentRecords) {
             TodayTrafficResponse dto = TodayTrafficResponse.builder()
-                    .licensePlate(!record.getLicensePlate().equals("") ? record.getLicensePlate() : record.getIdentifier())
+                    .licensePlate(
+                            !record.getLicensePlate().equals("") ? record.getLicensePlate() : record.getIdentifier())
                     .vehicleType(record.getVehicleType().getName())
                     .ticketType(record.getType().toString())
                     .timestamp(record.getEntryTime())
@@ -237,7 +238,8 @@ public class ParkingServiceImpl implements ParkingService {
             // entry record from history
             if (record.getEntryTime().isAfter(startOfDay) && record.getEntryTime().isBefore(endOfDay)) {
                 TodayTrafficResponse entryDto = TodayTrafficResponse.builder()
-                        .licensePlate(!record.getLicensePlate().equals("") ? record.getLicensePlate() : record.getIdentifier())
+                        .licensePlate(!record.getLicensePlate().equals("") ? record.getLicensePlate()
+                                : record.getIdentifier())
                         .vehicleType(record.getVehicleType().getName())
                         .ticketType(record.getType().toString())
                         .timestamp(record.getEntryTime())
@@ -248,7 +250,8 @@ public class ParkingServiceImpl implements ParkingService {
             }
             // exit record from history
             TodayTrafficResponse exitDto = TodayTrafficResponse.builder()
-                    .licensePlate(!record.getLicensePlate().equals("") ? record.getLicensePlate() : record.getIdentifier())
+                    .licensePlate(
+                            !record.getLicensePlate().equals("") ? record.getLicensePlate() : record.getIdentifier())
                     .vehicleType(record.getVehicleType().getName())
                     .ticketType(record.getType().toString())
                     .timestamp(record.getExitTime())
@@ -259,6 +262,21 @@ public class ParkingServiceImpl implements ParkingService {
         }
         result.sort((a, b) -> b.getTimestamp().compareTo(a.getTimestamp()));
         return result;
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<ParkingExitResponse> getParkingHistoryByDate(int month, int day) {
+        int currentYear = LocalDate.now().getYear();
+
+        LocalDate targetDate = LocalDate.of(currentYear, month, day);
+
+        LocalDateTime startOfDay = targetDate.atStartOfDay();
+        LocalDateTime endOfDay = targetDate.atTime(23, 59, 59);
+
+        List<ParkingRecordHistory> historyRecord = parkingRecordHistoryRepository.findByExitTimeBetween(startOfDay,
+                endOfDay);
+        return historyRecord.stream().map(recordMapper::toParkingExitResponse).toList();
     }
 
 }

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.group1.parking_management.dto.ApiResponse;
@@ -57,6 +58,14 @@ public class ParkingController {
     public ApiResponse<List<TodayTrafficResponse>> getTodayTraffic() {
         return ApiResponse.<List<TodayTrafficResponse>>builder()
                 .result(parkingService.getTodayTraffic())
+                .build();
+    }
+
+    @GetMapping("/record-history")
+    public ApiResponse<List<ParkingExitResponse>> getParkingHistoryByDate(@RequestParam int month,
+            @RequestParam int day) {
+        return ApiResponse.<List<ParkingExitResponse>>builder()
+                .result(parkingService.getParkingHistoryByDate(month, day))
                 .build();
     }
 }

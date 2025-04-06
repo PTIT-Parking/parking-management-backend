@@ -23,4 +23,5 @@ public interface ParkingService {
     public ParkingRecordHistory recordToHistory(ParkingRecord record, Payment payment, Account staff);
     public List<VehicleTypeResponse> getAllVehicleType();
     public List<TodayTrafficResponse> getTodayTraffic();
+    public List<ParkingExitResponse> getParkingHistoryByDate(int month, int day);
 }
