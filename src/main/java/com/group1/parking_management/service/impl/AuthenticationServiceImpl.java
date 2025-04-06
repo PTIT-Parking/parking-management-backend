@@ -78,6 +78,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Staff staff = staffRepository.findById(account.getAccountId())
                 .orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_FOUND));
         return StaffResponse.builder()
+                .username(username)
                 .identification(staff.getIdentification())
                 .name(staff.getName())
                 .dob(staff.getDob())

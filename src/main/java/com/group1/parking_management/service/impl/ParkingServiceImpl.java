@@ -168,13 +168,14 @@ public class ParkingServiceImpl implements ParkingService {
         LocalDateTime entryTime = record.getEntryTime();
         LocalDateTime exitTime = LocalDateTime.now();
         Duration duration = Duration.between(entryTime, exitTime);
+        long days = duration.toDays();
         boolean isOver24h = duration.toDays() >= 1;
 
         int fee;
         if (record.getType() == ParkingType.MONTHLY) {
             fee = 0;
         } else if (isOver24h) {
-            fee = price.getDayPrice();
+            fee = (int) (price.getDayPrice() * days);
         } else {
             boolean isDayTime = entryTime.getHour() >= 5 && entryTime.getHour() <= 18;
             fee = isDayTime ? price.getDayPrice() : price.getNightPrice();
