@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.group1.parking_management.dto.ApiResponse;
@@ -22,6 +23,13 @@ public class PaymentController {
     public ApiResponse<List<PaymentResponse>> getAllPayment() {
         return ApiResponse.<List<PaymentResponse>>builder()
                 .result(paymentService.getAllPayment())
+                .build();
+    }
+
+    @GetMapping("/at-date")
+    public ApiResponse<List<PaymentResponse>> getPaymentByDate(@RequestParam int month, @RequestParam int day) {
+        return ApiResponse.<List<PaymentResponse>>builder()
+                .result(paymentService.getPaymentByDate(month, day))
                 .build();
     }
 }

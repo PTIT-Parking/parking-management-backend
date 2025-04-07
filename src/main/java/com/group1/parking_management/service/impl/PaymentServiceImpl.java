@@ -1,5 +1,7 @@
 package com.group1.parking_management.service.impl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +24,19 @@ public class PaymentServiceImpl implements PaymentService {
     @PreAuthorize("hasRole('ADMIN')")
     public List<PaymentResponse> getAllPayment() {
         return paymentRepository.findAllByOrderByCreateAtDesc().stream().map(paymentMapper::toResponse).toList();
+    }
+
+    @Override
+    public List<PaymentResponse> getPaymentByDate(int month, int day) {
+        int currentYear = LocalDateTime.now().getYear();
+
+        LocalDate targetDate = LocalDate.of(currentYear, month, day);
+
+        LocalDateTime startOfDay = targetDate.atStartOfDay();
+        LocalDateTime endOfDay = targetDate.atTime(23, 59, 59);
+
+        return paymentRepository.findByCreateAtBetweenOrderByCreateAtDesc(startOfDay, endOfDay).stream()
+                .map(paymentMapper::toResponse).toList();
     }
 
 }

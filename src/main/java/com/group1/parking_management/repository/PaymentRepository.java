@@ -13,6 +13,7 @@ import com.group1.parking_management.entity.Payment;
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, String> {
     List<Payment> findAllByOrderByCreateAtDesc();
+    List<Payment> findByCreateAtBetweenOrderByCreateAtDesc(LocalDateTime start, LocalDateTime end);
     @Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.createAt BETWEEN :startDate AND :endDate")
     long sumRevenueBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 }

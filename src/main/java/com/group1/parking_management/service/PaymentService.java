@@ -9,4 +9,5 @@ import com.group1.parking_management.dto.response.PaymentResponse;
 @Service
 public interface PaymentService {
     public List<PaymentResponse> getAllPayment(); 
+    public List<PaymentResponse> getPaymentByDate(int month, int year);
 }
