@@ -201,7 +201,6 @@ public class ParkingServiceImpl implements ParkingService {
     }
 
     @Override
-    @PreAuthorize("hasRole('STAFF')")
     public List<VehicleTypeResponse> getAllVehicleType() {
         return vehicleTypeRepository.findAll().stream().map(vehicleTypeMapper::toVehicleTypeResponse).toList();
     }
