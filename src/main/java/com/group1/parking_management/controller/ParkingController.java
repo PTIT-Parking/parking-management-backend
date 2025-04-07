@@ -15,6 +15,7 @@ import com.group1.parking_management.dto.request.ParkingExitRequest;
 import com.group1.parking_management.dto.response.TodayTrafficResponse;
 import com.group1.parking_management.dto.response.ParkingEntryResponse;
 import com.group1.parking_management.dto.response.ParkingExitResponse;
+import com.group1.parking_management.dto.response.ParkingRecordResponse;
 import com.group1.parking_management.dto.response.VehicleTypeResponse;
 import com.group1.parking_management.service.ParkingService;
 
@@ -62,9 +63,9 @@ public class ParkingController {
     }
 
     @GetMapping("/record-history")
-    public ApiResponse<List<ParkingExitResponse>> getParkingHistoryByDate(@RequestParam int month,
+    public ApiResponse<List<ParkingRecordResponse>> getParkingHistoryByDate(@RequestParam int month,
             @RequestParam int day) {
-        return ApiResponse.<List<ParkingExitResponse>>builder()
+        return ApiResponse.<List<ParkingRecordResponse>>builder()
                 .result(parkingService.getParkingHistoryByDate(month, day))
                 .build();
     }

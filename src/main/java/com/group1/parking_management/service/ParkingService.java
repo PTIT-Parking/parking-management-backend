@@ -9,6 +9,7 @@ import com.group1.parking_management.dto.request.ParkingExitRequest;
 import com.group1.parking_management.dto.response.TodayTrafficResponse;
 import com.group1.parking_management.dto.response.ParkingEntryResponse;
 import com.group1.parking_management.dto.response.ParkingExitResponse;
+import com.group1.parking_management.dto.response.ParkingRecordResponse;
 import com.group1.parking_management.dto.response.VehicleTypeResponse;
 import com.group1.parking_management.entity.Account;
 import com.group1.parking_management.entity.ParkingRecord;
@@ -23,5 +24,5 @@ public interface ParkingService {
     public ParkingRecordHistory recordToHistory(ParkingRecord record, Payment payment, Account staff);
     public List<VehicleTypeResponse> getAllVehicleType();
     public List<TodayTrafficResponse> getTodayTraffic();
-    public List<ParkingExitResponse> getParkingHistoryByDate(int month, int day);
+    public List<ParkingRecordResponse> getParkingHistoryByDate(int month, int day);
 }
