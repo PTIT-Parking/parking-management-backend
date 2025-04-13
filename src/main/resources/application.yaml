@@ -8,7 +8,7 @@ spring:
     name: parking-management
 
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/parking_management
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/parking_management
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PASSWORD:password}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -36,3 +36,9 @@ spring:
           issuer-uri: PtitParking
           secret-key: G18XeUdtfVcoB+Ukcga417kzaaAX5DM4rCuuP7nJUlDQmSKJEZtw/vSH7c3PXn6W
           valid-duration: 3600
+
+  task:
+    scheduling:
+      pool:
+        size: 5
+      thread-name-prefix: scheduler-
