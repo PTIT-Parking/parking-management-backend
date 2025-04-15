@@ -27,6 +27,7 @@ public enum ErrorCode {
     USERNAME_NOT_FOUND(2003, "User not found", HttpStatus.NOT_FOUND),
     STAFF_NOT_FOUND(2004, "Staff not found", HttpStatus.NOT_FOUND),
     ROLE_NOT_FOUND(2005, "Role not found", HttpStatus.NOT_FOUND),
+    STAFF_STATUS_DISABLED(2006, "Staff status has been disabled", HttpStatus.BAD_REQUEST),
 
     //JWT (Token & Security)
     JWT_GENERATION_ERROR(3001, "Could not generate JWT token", HttpStatus.INTERNAL_SERVER_ERROR),

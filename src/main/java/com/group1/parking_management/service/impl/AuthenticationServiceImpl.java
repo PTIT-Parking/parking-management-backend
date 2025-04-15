@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.group1.parking_management.common.Role;
 import com.group1.parking_management.dto.request.ChangePasswordRequest;
 import com.group1.parking_management.dto.request.LoginRequest;
 import com.group1.parking_management.dto.request.LogoutRequest;
@@ -38,6 +39,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public LoginResponse login(LoginRequest request) {
         Account account = accountRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.AUTH_INVALID_CREDENTIALS));
+        if (account.getRole() == Role.STAFF) {
+            Staff staff = staffRepository.findById(account.getAccountId()).orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_FOUND));
+            if (Boolean.FALSE.equals(staff.getIsActive())) {
+                throw new AppException(ErrorCode.STAFF_STATUS_DISABLED);
+            }
+
+        }
         if (!passwordEncoder.matches(request.getPassword(), account.getPassword())) {
             throw new AppException(ErrorCode.AUTH_INVALID_CREDENTIALS);
         }
