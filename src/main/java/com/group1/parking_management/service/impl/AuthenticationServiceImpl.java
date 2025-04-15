@@ -39,15 +39,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public LoginResponse login(LoginRequest request) {
         Account account = accountRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.AUTH_INVALID_CREDENTIALS));
+
+        if (!passwordEncoder.matches(request.getPassword(), account.getPassword())) {
+            throw new AppException(ErrorCode.AUTH_INVALID_CREDENTIALS);
+        }
+        
         if (account.getRole() == Role.STAFF) {
-            Staff staff = staffRepository.findById(account.getAccountId()).orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_FOUND));
+            Staff staff = staffRepository.findById(account.getAccountId())
+                    .orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_FOUND));
             if (Boolean.FALSE.equals(staff.getIsActive())) {
                 throw new AppException(ErrorCode.STAFF_STATUS_DISABLED);
             }
 
-        }
-        if (!passwordEncoder.matches(request.getPassword(), account.getPassword())) {
-            throw new AppException(ErrorCode.AUTH_INVALID_CREDENTIALS);
         }
 
         String token = jwtUtil.generateToken(account.getUsername(), account.getRole().toString());
@@ -99,10 +102,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Transactional
     public void changePassword(ChangePasswordRequest request) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName(); 
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Account account = accountRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_FOUND));
-        
+
         if (!passwordEncoder.matches(request.getOldPassword(), account.getPassword())) {
             throw new AppException(ErrorCode.AUTH_WRONG_PASSWORD);
         }
