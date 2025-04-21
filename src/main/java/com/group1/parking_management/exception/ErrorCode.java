@@ -20,6 +20,8 @@ public enum ErrorCode {
     AUTH_UNAUTHORIZED(1007, "Unauthorized request", HttpStatus.FORBIDDEN),
     AUTH_WRONG_PASSWORD(1008, "Old password is incorrect", HttpStatus.BAD_REQUEST),
     AUTH_PASSWORD_SAME_AS_OLD(1009, "New password must be different from the old password", HttpStatus.BAD_REQUEST),
+    AUTH_EMAIL_MISMATCH(1010, "Email is not match with username", HttpStatus.BAD_REQUEST),
+    AUTH_RESET_TOKEN_INVALID(1011, "Reset token invalid or expired", HttpStatus.BAD_REQUEST),
 
     // Staff
     USERNAME_EXISTED(2001, "Username already exists", HttpStatus.BAD_REQUEST),
