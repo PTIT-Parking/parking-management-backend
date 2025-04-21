@@ -16,6 +16,18 @@ public class RedisService {
         redisTemplate.opsForValue().set(token, "Blacklisted", expirationTime, TimeUnit.SECONDS);
     }
 
+    public void addResetToken(String token, String value) {
+        redisTemplate.opsForValue().set("reset_token:" + token, value, 15, TimeUnit.MINUTES);
+    }
+
+    public String getValue(String key) {
+        return redisTemplate.opsForValue().get(key);
+    }
+
+    public void deleteValue(String key) {
+        redisTemplate.delete(key);
+    }
+
     public boolean isTokenBacklisted(String token) {
         if (token == null) return false;
         Boolean result = redisTemplate.hasKey(token);
