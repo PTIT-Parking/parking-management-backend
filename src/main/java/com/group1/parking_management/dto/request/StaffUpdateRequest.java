@@ -2,7 +2,6 @@ package com.group1.parking_management.dto.request;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.group1.parking_management.common.Gender;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class  StaffUpdateRequest {
 
     private String username;
