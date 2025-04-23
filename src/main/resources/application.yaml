@@ -8,9 +8,9 @@ spring:
     name: parking-management
 
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3307}/parking_management
-    username: ${MYSQL_USER:root}
-    password: ${MYSQL_PASSWORD:Password}
+    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/parking_management
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       initialization-fail-timeout: 60000
@@ -25,8 +25,8 @@ spring:
 
   data:
     redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
       database: 0
 
   security:
@@ -41,12 +41,12 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com
-    password: your_app_password
+    username: ${MAIL_USERNAME:n22dccn048@student.ptithcm.edu.vn}
+    password: ${MAIL_PASSWORD:gsgv ohww wqth caoa}
     properties:
       mail:
         smtp:
-          auth:
+          auth: true
           starttls:
             enable: true
 
