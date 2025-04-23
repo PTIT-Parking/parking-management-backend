@@ -18,4 +18,5 @@ public interface AuthenticationService {
     public void changePassword(ChangePasswordRequest request);
     public void forgotPassword(ForgotPasswordRequest request);
     public void resetPassword(ResetPasswordRequest request);
+    public boolean validateResetToken(String token);
 }
