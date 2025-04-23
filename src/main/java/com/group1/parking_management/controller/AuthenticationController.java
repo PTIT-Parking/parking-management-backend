@@ -6,12 +6,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.group1.parking_management.dto.ApiResponse;
 import com.group1.parking_management.dto.request.ChangePasswordRequest;
+import com.group1.parking_management.dto.request.ForgotPasswordRequest;
 import com.group1.parking_management.dto.request.LoginRequest;
 import com.group1.parking_management.dto.request.LogoutRequest;
+import com.group1.parking_management.dto.request.ResetPasswordRequest;
 import com.group1.parking_management.dto.response.LoginResponse;
 import com.group1.parking_management.dto.response.StaffResponse;
 import com.group1.parking_management.service.AuthenticationService;
@@ -52,6 +55,29 @@ public class AuthenticationController {
         authenticationService.changePassword(request);
         return ApiResponse.<String>builder()
                 .result("Password changed successfully!")
+                .build();
+    }
+
+    @PostMapping("/forgot-password")
+    public ApiResponse<String> forgotPassword(@RequestBody @Valid ForgotPasswordRequest request) {
+        authenticationService.forgotPassword(request);
+        return ApiResponse.<String>builder()
+                .result("Password reset instructions have been sent to your email")
+                .build();
+    }
+
+    @PostMapping("/reset-password")
+    public ApiResponse<String> resetPassword(@RequestBody @Valid ResetPasswordRequest request) {
+        authenticationService.resetPassword(request);
+        return ApiResponse.<String>builder()
+                .result("Password has been reset successfully")
+                .build();
+    }
+
+    @GetMapping("validate-reset-token")
+    public ApiResponse<Boolean> validateResetToken(@RequestParam @Valid String token) {
+        return ApiResponse.<Boolean>builder()
+                .result(authenticationService.validateResetToken(token))
                 .build();
     }
 }

@@ -42,4 +42,8 @@ build/
 data/
 
 ### application.yaml ###
-application.yaml
+# application.yaml
+
+
+### application init ###
+ApplicationInitConfig.java

@@ -9,18 +9,21 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
-    
+
     // Authentication & Authorization
     AUTH_INVALID_CREDENTIALS(1001, "Invalid username or password", HttpStatus.UNAUTHORIZED),
-    AUTH_USERNAME_INVALID(1002,"Username must be at least 4 characters", HttpStatus.BAD_REQUEST),
+    AUTH_USERNAME_INVALID(1002, "Username must be at least 4 characters", HttpStatus.BAD_REQUEST),
     AUTH_PASSWORD_INVALID(1003, "Password must be at least 8 characters", HttpStatus.BAD_REQUEST),
     AUTH_EMAIL_INVALID(1004, "Email must be ended with '@gmail.com'", HttpStatus.BAD_REQUEST),
     AUTH_FORBIDDEN(1005, "Access denied", HttpStatus.FORBIDDEN),
     AUTH_UNAUTHENTICATED(1006, "Unauthenticated request", HttpStatus.UNAUTHORIZED),
     AUTH_UNAUTHORIZED(1007, "Unauthorized request", HttpStatus.FORBIDDEN),
-    AUTH_WRONG_PASSWORD(1008, "Password is incorrect", HttpStatus.BAD_REQUEST),
+    AUTH_WRONG_PASSWORD(1008, "Old password is incorrect", HttpStatus.BAD_REQUEST),
     AUTH_PASSWORD_SAME_AS_OLD(1009, "New password must be different from the old password", HttpStatus.BAD_REQUEST),
-    
+    AUTH_EMAIL_MISMATCH(1010, "Email is not match with username", HttpStatus.BAD_REQUEST),
+    AUTH_RESET_TOKEN_INVALID(1011, "Reset token invalid or expired", HttpStatus.BAD_REQUEST),
+    AUTH_EMAIL_RESET_FAIL_TO_SEND(1012, "Failed to send password reset email", HttpStatus.BAD_REQUEST),
+
     // Staff
     USERNAME_EXISTED(2001, "Username already exists", HttpStatus.BAD_REQUEST),
     STAFF_IDENTIFICATION_EXISTED(2002, "Identification already exists", HttpStatus.BAD_REQUEST),
@@ -29,7 +32,7 @@ public enum ErrorCode {
     ROLE_NOT_FOUND(2005, "Role not found", HttpStatus.NOT_FOUND),
     STAFF_STATUS_DISABLED(2006, "Staff status has been disabled", HttpStatus.BAD_REQUEST),
 
-    //JWT (Token & Security)
+    // JWT (Token & Security)
     JWT_GENERATION_ERROR(3001, "Could not generate JWT token", HttpStatus.INTERNAL_SERVER_ERROR),
     JWT_INVALID(3002, "Invalid JWT token", HttpStatus.UNAUTHORIZED),
     JWT_EXPIRED(3003, "JWT token has expired", HttpStatus.UNAUTHORIZED),
@@ -49,9 +52,12 @@ public enum ErrorCode {
     // Monthly Registration
     MONTHLY_CUSTOMER_TYPE_INVALID(5001, "Customer type invalid", HttpStatus.BAD_REQUEST),
     MONTHLY_VEHICLE_BEING_REGISTERED(5002, "Lisence plate is still registered", HttpStatus.BAD_REQUEST),
-    MONTHLY_VEHICLE_TYPE_NOT_EQUALS_TO_RECORD(5003, "The vehicle type you choose not equals with vehicle type in record", HttpStatus.BAD_REQUEST),
-    LECTURER_INPUT_ERROR(5004, "Lecturer must have lecturerId, and student fields must be empty", HttpStatus.BAD_REQUEST),
-    STUDENT_INPUT_ERROR(5005, "Student must have studentId, faculty, major, classInfo, and lecturerId must be empty", HttpStatus.BAD_REQUEST),
+    MONTHLY_VEHICLE_TYPE_NOT_EQUALS_TO_RECORD(5003,
+            "The vehicle type you choose not equals with vehicle type in record", HttpStatus.BAD_REQUEST),
+    LECTURER_INPUT_ERROR(5004, "Lecturer must have lecturerId, and student fields must be empty",
+            HttpStatus.BAD_REQUEST),
+    STUDENT_INPUT_ERROR(5005, "Student must have studentId, faculty, major, classInfo, and lecturerId must be empty",
+            HttpStatus.BAD_REQUEST),
 
     // Missing Report
     VEHICLE_NOT_IN_PARKING(6001, "Vehicle not in parking", HttpStatus.BAD_REQUEST),

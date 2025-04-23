@@ -1,0 +1,64 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: parking-management
+
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/parking_management
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      initialization-fail-timeout: 60000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      database: 0
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: PtitParking
+          secret-key: G18XeUdtfVcoB+Ukcga417kzaaAX5DM4rCuuP7nJUlDQmSKJEZtw/vSH7c3PXn6W
+          valid-duration: 3600
+
+  # Mail configuration
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:n22dccn048@student.ptithcm.edu.vn}
+    password: ${MAIL_PASSWORD:gsgv ohww wqth caoa}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# Schedule configuration
+  task:
+    scheduling:
+      pool:
+        size: 5
+      thread-name-prefix: scheduler-
+
+# Frontend URL
+app:
+  frontend-url: http://localhost:3000
+
+
