@@ -145,7 +145,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional
     public void resetPassword(ResetPasswordRequest request) {
 
-        String redisKey = "reset_token" + request.getToken();
+        String redisKey = "reset_token:" + request.getToken();
         String username = redisService.getValue(redisKey);
 
         if (username == null) {
@@ -163,5 +163,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         accountRepository.save(account);
 
         redisService.deleteValue(redisKey);
+    }
+
+    public boolean validateResetToken(String token) {
+        if (token == null || token.isEmpty()) {
+            return false;
+        }
+
+        String redisKey = "reset_token:" + token;
+        String username = redisService.getValue(redisKey);
+
+        return username != null;
     }
 }
