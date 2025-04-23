@@ -22,6 +22,7 @@ public enum ErrorCode {
     AUTH_PASSWORD_SAME_AS_OLD(1009, "New password must be different from the old password", HttpStatus.BAD_REQUEST),
     AUTH_EMAIL_MISMATCH(1010, "Email is not match with username", HttpStatus.BAD_REQUEST),
     AUTH_RESET_TOKEN_INVALID(1011, "Reset token invalid or expired", HttpStatus.BAD_REQUEST),
+    AUTH_EMAIL_RESET_FAIL_TO_SEND(1012, "Failed to send password reset email", HttpStatus.BAD_REQUEST),
 
     // Staff
     USERNAME_EXISTED(2001, "Username already exists", HttpStatus.BAD_REQUEST),
