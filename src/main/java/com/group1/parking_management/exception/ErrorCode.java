@@ -24,13 +24,14 @@ public enum ErrorCode {
     AUTH_RESET_TOKEN_INVALID(1011, "Reset token invalid or expired", HttpStatus.BAD_REQUEST),
     AUTH_EMAIL_RESET_FAIL_TO_SEND(1012, "Failed to send password reset email", HttpStatus.BAD_REQUEST),
 
-    // Staff
+    // Admin/Staff
     USERNAME_EXISTED(2001, "Username already exists", HttpStatus.BAD_REQUEST),
     STAFF_IDENTIFICATION_EXISTED(2002, "Identification already exists", HttpStatus.BAD_REQUEST),
     USERNAME_NOT_FOUND(2003, "User not found", HttpStatus.NOT_FOUND),
     STAFF_NOT_FOUND(2004, "Staff not found", HttpStatus.NOT_FOUND),
     ROLE_NOT_FOUND(2005, "Role not found", HttpStatus.NOT_FOUND),
     STAFF_STATUS_DISABLED(2006, "Staff status has been disabled", HttpStatus.BAD_REQUEST),
+    ADMIN_NOT_FOUND(2007, "Admin not found", HttpStatus.NOT_FOUND),
 
     // JWT (Token & Security)
     JWT_GENERATION_ERROR(3001, "Could not generate JWT token", HttpStatus.INTERNAL_SERVER_ERROR),
