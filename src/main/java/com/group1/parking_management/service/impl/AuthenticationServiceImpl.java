@@ -18,10 +18,12 @@ import com.group1.parking_management.dto.request.ResetPasswordRequest;
 import com.group1.parking_management.dto.response.LoginResponse;
 import com.group1.parking_management.dto.response.StaffResponse;
 import com.group1.parking_management.entity.Account;
+import com.group1.parking_management.entity.Admin;
 import com.group1.parking_management.entity.Staff;
 import com.group1.parking_management.exception.AppException;
 import com.group1.parking_management.exception.ErrorCode;
 import com.group1.parking_management.repository.AccountRepository;
+import com.group1.parking_management.repository.AdminRepository;
 import com.group1.parking_management.repository.StaffRepository;
 import com.group1.parking_management.service.AuthenticationService;
 import com.group1.parking_management.service.EmailService;
@@ -40,6 +42,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final RedisService redisService;
     private final EmailService emailService;
+    private final AdminRepository adminRepository;
 
     public LoginResponse login(LoginRequest request) {
         Account account = accountRepository.findByUsername(request.getUsername())
@@ -126,19 +129,30 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional
     public void forgotPassword(ForgotPasswordRequest request) {
         Account account = accountRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
 
-        Staff staff = staffRepository.findById(account.getAccountId())
-                .orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_FOUND));
+        String email;
+        if (account.getRole() == Role.STAFF) {
+            Staff staff = staffRepository.findById(account.getAccountId())
+                    .orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_FOUND));
 
-        if (!staff.getEmail().equals(request.getEmail())) {
-            throw new AppException(ErrorCode.AUTH_EMAIL_MISMATCH);
+            if (!staff.getEmail().equals(request.getEmail())) {
+                throw new AppException(ErrorCode.AUTH_EMAIL_MISMATCH);
+            }
+            email = staff.getEmail();
+        } else {
+            Admin admin = adminRepository.findById(account.getAccountId())
+                    .orElseThrow(() -> new AppException(ErrorCode.ADMIN_NOT_FOUND));
+            if (!admin.getEmail().equals(request.getEmail())) {
+                throw new AppException(ErrorCode.AUTH_EMAIL_MISMATCH);
+            }
+            email = admin.getEmail();
         }
 
         String resetToken = UUID.randomUUID().toString();
         redisService.addResetToken(resetToken, account.getUsername());
 
-        emailService.sendPasswordResetEmail(staff.getEmail(), account.getUsername(), resetToken);
+        emailService.sendPasswordResetEmail(email, account.getUsername(), resetToken);
 
     }
 
@@ -153,7 +167,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         Account account = accountRepository.findByUsername(username)
-                .orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND));
 
         if (passwordEncoder.matches(request.getNewPassword(), account.getPassword())) {
             throw new AppException(ErrorCode.AUTH_PASSWORD_SAME_AS_OLD);
