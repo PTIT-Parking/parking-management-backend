@@ -7,5 +7,6 @@ import com.group1.parking_management.entity.Vehicle;
 
 @Repository
 public interface VehicleRepository extends JpaRepository<Vehicle, String> {
+    boolean existsByLicensePlate(String lisensePlate);
     Vehicle findByLicensePlate(String lisensePlate);
 }   

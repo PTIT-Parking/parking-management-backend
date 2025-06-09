@@ -68,12 +68,16 @@ public class MonthlyRegistrationServiceImpl implements MonthlyRegistrationServic
         if (activeMonthlyRegistrationRepository.existsByLicensePlate(request.getLicensePlate())) {
             throw new AppException(ErrorCode.MONTHLY_VEHICLE_BEING_REGISTERED);
         }
-        Vehicle vehicle = vehicleRepository.save(Vehicle.builder()
-                .licensePlate(request.getLicensePlate())
-                .type(vehicleType)
-                .brand(request.getBrand())
-                .color(request.getColor())
-                .build());
+        
+        Vehicle vehicle = null;
+        if (vehicleRepository.existsByLicensePlate(request.getLicensePlate())) {
+            vehicle = vehicleRepository.save(Vehicle.builder()
+                    .licensePlate(request.getLicensePlate())
+                    .type(vehicleType)
+                    .brand(request.getBrand())
+                    .color(request.getColor())
+                    .build());
+        }
 
         Customer customer = customerRepository.save(Customer.builder()
                 .customerType(request.getCustomerType())
