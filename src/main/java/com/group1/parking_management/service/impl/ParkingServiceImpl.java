@@ -23,11 +23,13 @@ import com.group1.parking_management.dto.response.ParkingExitResponse;
 import com.group1.parking_management.dto.response.ParkingRecordResponse;
 import com.group1.parking_management.dto.response.VehicleTypeResponse;
 import com.group1.parking_management.entity.Account;
+import com.group1.parking_management.entity.ExpireMonthlyRegistration;
 import com.group1.parking_management.entity.ParkingCard;
 import com.group1.parking_management.entity.ParkingRecord;
 import com.group1.parking_management.entity.ParkingRecordHistory;
 import com.group1.parking_management.entity.Payment;
 import com.group1.parking_management.entity.Price;
+import com.group1.parking_management.entity.Vehicle;
 import com.group1.parking_management.entity.VehicleType;
 import com.group1.parking_management.exception.AppException;
 import com.group1.parking_management.exception.ErrorCode;
@@ -35,11 +37,13 @@ import com.group1.parking_management.mapper.RecordMapper;
 import com.group1.parking_management.mapper.VehicleTypeMapper;
 import com.group1.parking_management.repository.AccountRepository;
 import com.group1.parking_management.repository.ActiveMonthlyRegistrationRepository;
+import com.group1.parking_management.repository.ExpireMonthlyRegistrationRepository;
 import com.group1.parking_management.repository.ParkingCardRepository;
 import com.group1.parking_management.repository.ParkingRecordHistoryRepository;
 import com.group1.parking_management.repository.ParkingRecordRepository;
 import com.group1.parking_management.repository.PaymentRepository;
 import com.group1.parking_management.repository.PriceRepository;
+import com.group1.parking_management.repository.VehicleRepository;
 import com.group1.parking_management.repository.VehicleTypeRepository;
 import com.group1.parking_management.service.ParkingService;
 
@@ -60,6 +64,8 @@ public class ParkingServiceImpl implements ParkingService {
     private final PaymentRepository paymentRepository;
     private final ParkingRecordHistoryRepository parkingRecordHistoryRepository;
     private final VehicleTypeMapper vehicleTypeMapper;
+    private final VehicleRepository vehicleRepository;
+    private final ExpireMonthlyRegistrationRepository expireMonthlyRegistrationRepository;
 
     @Override
     @Transactional
@@ -169,14 +175,25 @@ public class ParkingServiceImpl implements ParkingService {
         LocalDateTime entryTime = record.getEntryTime();
         LocalDateTime exitTime = LocalDateTime.now();
         Duration duration = Duration.between(entryTime, exitTime);
-        long days = duration.toDays();
+        long hours = duration.toHours();
+        long roundedDays = (hours + 23) / 24;
         boolean isOver24h = duration.toDays() >= 1;
 
         int fee;
         if (record.getType() == ParkingType.MONTHLY) {
-            fee = 0;
-        } else if (isOver24h) {
-            fee = (int) (price.getDayPrice() * days);
+            Vehicle vehicle = vehicleRepository.findByLicensePlate(record.getLicensePlate());
+            if (vehicle != null) {
+                ExpireMonthlyRegistration monthlyRegistration = expireMonthlyRegistrationRepository.findByVehicle(vehicle);
+                if (monthlyRegistration != null) {
+                    LocalDateTime monthlyExpireTime = monthlyRegistration.getExpirationDate();
+                    hours = Duration.between(monthlyExpireTime, exitTime).toHours();
+                    roundedDays = (hours + 23) / 24;
+                }
+            }
+
+        } if (isOver24h) {
+            roundedDays = roundedDays > 0 ? roundedDays : 0;
+            fee = (int) (price.getNightPrice() * roundedDays);
         } else {
             boolean isDayTime = entryTime.getHour() >= 5 && entryTime.getHour() <= 18;
             fee = isDayTime ? price.getDayPrice() : price.getNightPrice();

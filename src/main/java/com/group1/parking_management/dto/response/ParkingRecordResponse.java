@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ParkingRecordResponse {
     private String historyId;
+    private String licensePlate;
     private String identifier;
     private VehicleType vehicleType;
     private ParkingCard card;
